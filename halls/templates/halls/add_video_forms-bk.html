@@ -1,0 +1,50 @@
+{% extends 'halls/base.html' %}
+{% block content %}
+<div class="container">
+<h2>Add Video</h2>
+
+<form action="" method='POST'>
+    <p>Form as p</p>
+    {% csrf_token %}
+    {{ form.as_p }}
+
+<hr>
+<p>Form as ol-ul</p>
+<ol>
+    {{ form.as_ul}}
+</ol>
+
+<hr>
+<p>Form as ul</p>
+{{ form.as_ul }}
+<hr>
+<p>Form as table</p>
+<table>
+{{ form.as_table }}
+</table>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<h2>Alter Layouts</h2>
+<form action="" method='POST'>
+    <p>Form as p</p>
+    {% csrf_token %}
+    {% for field in form %}
+
+        <!-- {{ field.errors }} -->
+        {{ field.label_tag }}
+        {{ field }}     
+    {% endfor %}
+
+    <hr>
+    {% for field in form %}
+  
+    {{ field }}
+    {{ field.label_tag }}
+
+    {% endfor %}
+    <br>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+</div>
+{% endblock %}
