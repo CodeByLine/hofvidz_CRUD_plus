@@ -7,9 +7,9 @@ from django import forms
 class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
-        fields = ['title', 'url', 'youtube_id']
+        fields = ['url']
 # customize appearance
-        labels = {'youtube_id':'YouTube Id'} #capitalize label
+        labels = {'url':'YouTube Url'} #capitalize label
 
 # Search
 
