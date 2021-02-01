@@ -83,11 +83,12 @@ def add_video(request, pk):
                 json = response.json()
                 title = json['items'][0]['snippet']['title']
                 video.title = title
+                # print(title)
                 video.save()
                 return redirect('detail_hall', pk)
             else:
                 errors = form._errors.setdefault('url', ErrorList())
                 errors.append('Needs to be a YouTube URL')
-
+            
 
     return render(request, 'halls/add_video.html', {'form':form, 'search_form':search_form, 'hall':hall})
