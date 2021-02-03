@@ -15,10 +15,11 @@
 
 {% for hall in popular_halls %}
 <h3><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h3>
-<a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger" >Delete</a>
-<a href="{% url 'update_hall' hall.id %}" class="btn btn-primary" >Edit Hall of Fame</a>
-<a href="{% url 'add_video' hall.id %}" class="btn btn-primary" >Add Video</a>
-
+    {% if user.id == hall.user.id %}
+        <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger" >Delete</a>
+        <a href="{% url 'update_hall' hall.id %}" class="btn btn-primary" >Edit Hall of Fame</a>
+        <a href="{% url 'add_video' hall.id %}" class="btn btn-primary" >Add Video</a>
+    {% endif %}
 
 <div class="row">
     {% for video in hall.video_set.all %}  <!-- many-to-many relations trick -->
@@ -39,10 +40,12 @@
 <h1 class="text-center">Recent Halls</h1>
 {% for hall in recent_halls %}
         <h3><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h3>
+    {% if user.id == hall.user.id %}  
         <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger" >Delete</a>
         <a href="{% url 'update_hall' hall.id %}" class="btn btn-primary" >Edit Hall of Fame</a>
         <a href="{% url 'add_video' hall.id %}" class="btn btn-primary" >Add Video</a>
- 
+    {% endif %}
+
         <div class="row">
             {% for video in hall.video_set.all %}  <!-- many-to-many relations trick -->
             <div class="col-md-4 mt-3">
