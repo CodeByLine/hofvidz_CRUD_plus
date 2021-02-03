@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from .models import Hall, Video
 from .forms import VideoForm, SearchForm
 # from django.forms import formset_factory
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.forms.utils import ErrorList
 import urllib
 import requests #pip install
@@ -14,14 +14,18 @@ import requests #pip install
 YOUTUBE_API_KEY = 'AIzaSyAmuKRwzhb-fp0cSEeyDT18kxuD19zAZD0'
 
 def home(request):
-    return render(request, 'halls/home.html')
+    recent_halls = Hall.objects.all().order_by('-id')[:3]
+    popular_halls = [Hall.objects.get(pk=5), Hall.objects.get(pk=6)]
+    return render(request, 'halls/home.html', {'recent_halls': recent_halls, 'popular_halls':popular_halls })
 
 def dashboard(request):
-    return render(request, 'halls/dashboard.html')
+    halls = Hall.objects.filter(user=request.user)
+
+    return render(request, 'halls/dashboard.html', {'halls':halls})
 
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('dashboard')
     template_name = 'registration/signup.html' 
         # above: auto/default path to templates/registration/signup.html
 
@@ -43,7 +47,7 @@ class CreateHall(generic.CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         super(CreateHall, self).form_valid(form)
-        return redirect('home')
+        return redirect('dashboard')
 
 class DetailHall(generic.DetailView):
     model = Hall
@@ -92,3 +96,17 @@ def add_video(request, pk):
             
 
     return render(request, 'halls/add_video.html', {'form':form, 'search_form':search_form, 'hall':hall})
+
+def video_search(request):
+    search_form = SearchForm(request.GET)
+    if search_form.is_valid():
+        encoded_search_term = urllib.parse.quote(search_form.cleaned_data['search_term'])
+        response = requests.get(f'https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q={ encoded_search_term }&key={YOUTUBE_API_KEY}')
+        return JsonResponse(response.json())
+    return JsonResponse({'error':'Not able to validate form'})
+
+
+class DeleteVideo(generic.DeleteView):
+    model = Video
+    template_name = 'halls/delete_video.html'
+    success_url = reverse_lazy('dashboard')
