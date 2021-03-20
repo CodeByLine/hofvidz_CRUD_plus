@@ -1,26 +1,24 @@
 {% extends 'halls/base.html' %}
 {% block content %}
 <section class="jumbotron text-center">
+
 <div class="container">
 
+{% if user.is_authenticated  %}    
+<h1 class="jumbotron-header">Welcome to Hall of Fame Videos</h1>
+{% else %}
     <h1 class="jumbotron-header">What's your personal Hall of Fame?</h1>
     <p class="lead text-muted">You know what they are. They are your goto videos. You have a top 10 list and it's time to share them with the world. Click the button below to get started.</p>
     <p><a href="{% url 'create_hall' %}" class="btn btn-primary" >Create Hall of Fame</a>
-    </p>
+</p>
+{% endif %}
 </div>
 
 </section>
 <div class="container">
-<h1 class="text-center">Popular Videos</h1>
+<h1 class="text-center">Popular Halls of Fame</h1>
 
 {% for hall in popular_halls %}
-<h3><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h3>
-    {% if user.id == hall.user.id %}
-        <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger" >Delete</a>
-        <a href="{% url 'update_hall' hall.id %}" class="btn btn-primary" >Edit Hall of Fame</a>
-        <a href="{% url 'add_video' hall.id %}" class="btn btn-primary" >Add Video</a>
-    {% endif %}
-
 <div class="row">
     {% for video in hall.video_set.all %}  <!-- many-to-many relations trick -->
     <div class="col-md-4 mt-3">
@@ -40,11 +38,6 @@
 <h1 class="text-center">Recent Halls</h1>
 {% for hall in recent_halls %}
         <h3><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h3>
-    {% if user.id == hall.user.id %}  
-        <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger" >Delete</a>
-        <a href="{% url 'update_hall' hall.id %}" class="btn btn-primary" >Edit Hall of Fame</a>
-        <a href="{% url 'add_video' hall.id %}" class="btn btn-primary" >Add Video</a>
-    {% endif %}
 
         <div class="row">
             {% for video in hall.video_set.all %}  <!-- many-to-many relations trick -->
